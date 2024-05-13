@@ -6,72 +6,28 @@ Notes (not so important): I made this in wsl ubuntu. So, if you want to run the 
 
 ## About The Project
 
-This project is for MLZoomcap Capstone 01. Drugs classification is about classifing drugs based on patient condition. There are 5 types of drugs: 'DrugY' 'drugC' 'drugX' 'drugA' 'drugB'. So, we will use features from dataset to classifing the drugs. To do that we can use logistic regression and tree based model. For this project, I use from Kaggle:
+This project is about classification potato diseases based on image using pre-trained model. The dataset that I used is from kaggle:
 
-[https://www.kaggle.com/datasets/prathamtripathi/drug-classification](https://www.kaggle.com/datasets/prathamtripathi/drug-classification)
+[https://www.kaggle.com/datasets/mukaffimoin/potato-diseases-datasets](https://www.kaggle.com/datasets/mukaffimoin/potato-diseases-datasets)
 
-Features in the dataset are: 'Age', 'Sex', 'BP', 'Cholesterol', 'Na_to_K'. with 'Drug' becomes the target. You can find the dataset in repository here too at `data/drug200.csv`
+The dataset has 7 classes: black scurf, blackleg, common scab, dry rot, healthy potatoes, miscellaneous, pink rot. You can find the dataset in repository here too at `data/original_dataset` or `data/split_dataset` that I already splitted to train, val and test (70%, 15%, 15%).
 
-The purpose of this project are to classification drugs based on the patient conditions (features). This will be useful in the health sector.
+The purpose of this project are to classification image in the potatoes. It will be good help for farmer and agricultural industry
 
-## About Files
+## About Folders and Files
 
-- `drugs-classification.ipynb` = EDA and Model Training (select Model).
-- `train.py` = script for final model
-- `predict.py` = script for loading the model and serving it via web service
-- `test.py` = for testing
+### Folders
 
-## How to run the project
+- `data` = contains dataset before and after splitted
+- `Notebook` = EDA, model training and parameter tuning too.
+- `model` = saved model in .h5 format and tflite format
 
-Download or clone the project `https://github.com/rahmaha/drugs-classification.git`
+### Files
 
-### Locally
+- `tensorflow-model.ipynb` = script to convert h5 model to tflite model. Also testing the model too.
 
-1. First, you need to have docker and pipenv on your laptop.
-2. Build the docker image
+## Deployment (Plan for future)
 
-`docker build -t drugs-classification .` You can change the name of the docker image as you want.
+Unfortunately, I still can't solved the problem that I have in `tensoflow-model.ipynb`. The error said 'ValueError: Cannot set tensor: Got value of type UINT8 but expected type FLOAT32 for input 0, name: serving_default_input_8:0'. I tried checking which one that cause the error but still can't find. Anyone that read this and have suggestions are really helpful for me.
 
-3. Run the docker image
-
-`docker run -it -p 9696:9696 drugs-classification:latest .`
-
-4. Run pipenv install
-5. Run pipenv shell
-6. Uncomment url (localhost) in the `test.py` and comment the other url (elasticbeanstalk)
-7. Open new terminal, run `test.py` script.
-
-### Cloud
-
-For cloud, I using aws EBS. To run the project, you can:
-
-1. Run pipenv install
-2. Run pipenv shell
-3. (Optional) you can change test.py script tp submit request.
-
-```import requests
-
-# url = "http://localhost:9696/predict"  # to run locally using docker
-host = "coba-capstone1-env.eba-kftbizs5.ap-southeast-1.elasticbeanstalk.com."
-url =  f"http://{host}/predict"
-
-patient = {
-    'Age': 30,
-    'Sex': 'M',
-    'BP': 'HIGH',
-    'Cholesterol': 'NORMAL',
-    'Na_to_K': 16.76
-}
-
-response = requests.post(url, json=patient).json()
-print('Predicted drug: ', response.get('drug'))
-```
-
-| SEX  |   BP   | CHOLESTEROL |
-| :--: | :----: | :---------: |
-|  F   |  HIGH  |    HIGH     |
-|  M   |  LOW   |   NORMAL    |
-| Good | NORMAL |     VS1     |
-|      |        |             |
-
-3. Open new terminal, run `test.py` script.
+Also for the plan: I will try using docker first and the next one is cloud (most likely AWS)
